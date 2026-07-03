@@ -1,5 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import "../styles/VideoComponent.css";
+import { TextField } from '@mui/material';
+import { Button } from '@mui/material';
 
 const server_url = "http://localhost:8000"
 
@@ -40,21 +42,99 @@ export default function VideoMeetComponent() {
 
   let [videos, setVideos] = useState([]);
 
-  
 
+  const getPermission = async () => {
+    try {
+      const videoPermission = await navigator.mediaDevices.getUserMedia({ video: true })
+      if (videoPermission) {
+        setVideoAvailable(true);
+      } else {
+        setVideoAvailable(false);
+      }
 
+      const audioPermission = await navigator.mediaDevices.getUserMedia({ audio: true })
+      if (audioPermission) {
+        setAudioAvailable(true);
+      } else {
+        setAudioAvailable(false);
+      }
 
+      if (navigator.mediaDevices.getDisplayMedia) {
+        setScreenAvailable(true);
+      } else {
+        setScreenAvailable(false);
+      }
+
+      if (videoAvailable || audioAvailable) {
+        const userMediaStream = await navigator.mediaDevices.getUserMedia({ video: videoAvailable, audio: audioAvailable });
+
+        if (userMediaStream) {
+          window.localStream = userMediaStream;
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = userMediaStream;
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    getPermission();
+  }, [])
+
+  let getUserMediaSuccess = (stream) => {
+
+  }
+
+  let getUserMedia = () => {
+    if ((video && videoAvailable) || (audio && audioAvailable)) {
+      navigator.mediaDevices.getUserMedia({ vidoe: video, audio: audio })
+        .then(getUserMediaSuccess)
+        .then((stream) => { })
+        .catch((e) => console.log(e))
+    } else {
+      try {
+        let tracks = localVideoRef.current.srcObject.getTracks();
+        tracks.forEach(tracks => tracks.stop())
+      } catch (e) { }
+    }
+  }
+
+  useEffect(() => {
+    if (video !== undefined && audio !== undefined) {
+      getUserMedia();
+    }
+  }, [audio, video])
+
+  let getMedia = () => {
+    setVideo(videoAvailable);
+    setAudio(audioAvailable);
+    connectToSocketServer();
+  }
+
+  const connect = () => {
+    setAskForUsername(false);
+    getMedia();
+  };
   return (
     <div>
-      
+
       {askForUsername == true ?
-      <div> 
+        <div>
 
-      
+          <h2>Enter into Lobby</h2>
+          <TextField id="outlined-basic" label="Username" value={username} onChange={e => setUsername(e.target.value)} variant="outlined" />
+          <Button variant="contained" onClick={connect}>Connect</Button>
 
-      </div>: <></>
-      
-    }
+          <div>
+            <video ref={localVideoRef} autoPlay muted></video>
+          </div>
+
+        </div> : <></>
+
+      }
 
     </div>
   )
