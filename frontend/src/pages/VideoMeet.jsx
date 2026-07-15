@@ -391,6 +391,11 @@ export default function VideoMeetComponent() {
     setScreen(!screen)
   }
 
+  let sendMessage = () => {
+    socketRef.current.emit('chat-message', message, username);
+    setMessage("");
+  }
+
   return (
     <div>
       {askForUsername === true ? (
@@ -416,6 +421,16 @@ export default function VideoMeetComponent() {
       ) : (
         <div className={styles.meetVideoContainer}>
 
+          {showModal ? <div className={styles.chatRoom}>
+            <div className={styles.chatContainer}>
+              <h1>chat</h1>
+              <div className={styles.chattingArea}>
+                <TextField value={message} onChange={(e) => setMessage(e.target.value)} id="outlined-basic" label="Enter Your chat" variant="outlined" />
+                <Button variant='contained' onClick={sendMessage}>Send</Button>
+              </div>
+            </div>
+          </div> : <></>}
+
 
           <div className={styles.buttonContainers}>
             <IconButton onClick={handleVideo} style={{ color: "white" }}>
@@ -433,7 +448,7 @@ export default function VideoMeetComponent() {
               </IconButton> : <></>}
 
             <Badge badgeContent={newMessages} max={999} color='secondary'>
-              <IconButton style={{ color: "white" }}>
+              <IconButton onClick={() => setModal(!showModal)} style={{ color: "white" }}>
                 <ChatIcon />                        </IconButton>
             </Badge>
           </div>
