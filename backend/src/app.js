@@ -19,7 +19,7 @@ app.use("/api/v1/users", userRoutes);
 
 const start = async () => {
   if (!process.env.MONGODB_URI) {
-    throw new Error("MONGODB_URI is not configured. Add it to backend/.env.");
+    throw new Error(MONGODB_URI);
   }
 
   const connectionDB = await mongoose.connect(
