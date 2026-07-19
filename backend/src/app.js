@@ -18,13 +18,17 @@ app.use(express.urlencoded({ limit: "40kb", extended: true }));
 app.use("/api/v1/users", userRoutes);
 
 const start = async () => {
+  if (!process.env.MONGODB_URI) {
+    throw new Error("MONGODB_URI is not configured. Add it to backend/.env.");
+  }
+
   const connectionDB = await mongoose.connect(
-    "mongodb+srv://lakshyajain013:KonvoDB@konvo.vwbb8xr.mongodb.net/",
+    process.env.MONGODB_URI,
   );
 
   console.log(`MONGO Connected DB Host : ${connectionDB.connection.host}`);
   server.listen(app.get("port"), () => {
-    console.log("Listining on port 8000");
+    console.log(`Listening on port ${app.get("port")}`);
   });
 };
 
