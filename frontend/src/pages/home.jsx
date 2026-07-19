@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import withAuth from '../utils/withAuth'
 import { useNavigate } from 'react-router-dom'
 import "../App.css";
 import { Button, IconButton, TextField } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
-import { AuthContext } from '../contexts/auth-context';
+import { AuthContext } from '../contexts/AuthContext';
 
 function HomeComponent() {
 
@@ -73,6 +73,4 @@ function HomeComponent() {
 }
 
 
-const Home = withAuth(HomeComponent);
-
-export default Home;
+export default withAuth(HomeComponent)

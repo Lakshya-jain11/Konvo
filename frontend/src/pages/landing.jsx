@@ -50,3 +50,4 @@ export default function LandingPage() {
         </div>
     )
 }
+import React from 'react'

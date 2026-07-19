@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/immutability, react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
 import { Button } from '@mui/material';
@@ -14,7 +13,7 @@ import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
 import ChatIcon from '@mui/icons-material/Chat'
 
 
-const server_url = import.meta.env.VITE_SERVER_URL ?? "http://localhost:8000"
+const server_url = "http://localhost:8000"
 
 var connections = {};
 
@@ -176,14 +175,13 @@ export default function VideoMeetComponent() {
     if ((video && videoAvailable) || (audio && audioAvailable)) {
       navigator.mediaDevices.getUserMedia({ video: video, audio: audio })
         .then(getUserMediaSuccess)
+        .then((stream) => { })
         .catch((e) => console.log(e))
     } else {
       try {
         let tracks = localVideoRef.current.srcObject.getTracks()
         tracks.forEach(track => track.stop())
-      } catch {
-        // No active stream is expected before the user enables media.
-      }
+      } catch (e) { }
     }
   }
 
@@ -305,9 +303,7 @@ export default function VideoMeetComponent() {
 
             try {
               connections[id2].addStream(window.localStream)
-            } catch {
-              // A peer may disconnect while a new offer is being created.
-            }
+            } catch (e) { }
 
             connections[id2].createOffer().then((description) => {
               connections[id2].setLocalDescription(description)
@@ -389,6 +385,7 @@ export default function VideoMeetComponent() {
       if (navigator.mediaDevices.getDisplayMedia) {
         navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
           .then(getDislayMediaSuccess)
+          .then((stream) => { })
           .catch((e) => console.log(e))
       }
     }
@@ -411,11 +408,9 @@ export default function VideoMeetComponent() {
 
   let handleEndCall = () => {
     try {
-      let tracks = localVideoRef.current.srcObject.getTracks()
+      let tracks = localVideoref.current.srcObject.getTracks()
       tracks.forEach(track => track.stop())
-    } catch {
-      // The call can end before a local media stream is available.
-    }
+    } catch (e) { }
     window.location.href = "/"
   }
 
