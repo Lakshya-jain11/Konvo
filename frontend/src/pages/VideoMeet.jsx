@@ -214,7 +214,15 @@ export default function VideoMeetComponent() {
     }
   }
 
-  let addMessage = () => { }
+  const addMessage = (data, sender, socketIdSender) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { sender: sender, data: data }
+    ]);
+    if (socketIdSender !== socketIdRef.current) {
+      setNewMessages((prevNewMessages) => prevNewMessages + 1);
+    }
+  };
 
   let connectToSocketServer = () => {
     socketRef.current = io.connect(server_url, { secure: false })
@@ -317,6 +325,8 @@ export default function VideoMeetComponent() {
     connectToSocketServer();
   }
 
+  // let routeTo = useNavigate();
+
   let connect = () => {
     setAskForUsername(false);
     getMedia();
@@ -396,6 +406,14 @@ export default function VideoMeetComponent() {
     setMessage("");
   }
 
+  let handleEndCall = () => {
+    try {
+      let tracks = localVideoref.current.srcObject.getTracks()
+      tracks.forEach(track => track.stop())
+    } catch (e) { }
+    window.location.href = "/"
+  }
+
   return (
     <div>
       {askForUsername === true ? (
@@ -424,6 +442,20 @@ export default function VideoMeetComponent() {
           {showModal ? <div className={styles.chatRoom}>
             <div className={styles.chatContainer}>
               <h1>chat</h1>
+              <div className={styles.chattingDisplay}>
+
+                {messages.length !== 0 ? messages.map((item, index) => {
+
+                  // console.log(messages)
+                  return (
+                    <div style={{ marginBottom: "15px" }} key={index}>
+                      <p style={{ fontWeight: "bold" }}>{item.sender}</p>
+                      <p>{item.data}</p>
+                    </div>
+                  )
+                }) : <p>No Messages Yet</p>}
+
+              </div>
               <div className={styles.chattingArea}>
                 <TextField value={message} onChange={(e) => setMessage(e.target.value)} id="outlined-basic" label="Enter Your chat" variant="outlined" />
                 <Button variant='contained' onClick={sendMessage}>Send</Button>
@@ -436,11 +468,11 @@ export default function VideoMeetComponent() {
             <IconButton onClick={handleVideo} style={{ color: "white" }}>
               {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
             </IconButton>
-            <IconButton style={{ color: "red" }}>
+            <IconButton onClick={handleEndCall} style={{ color: "red" }}>
               <CallEndIcon />
             </IconButton>
             <IconButton onClick={handleAudio} style={{ color: "white" }}>
-              {audio == true ? <MicIcon /> : <MicOffIcon />}
+              {audio === true ? <MicIcon /> : <MicOffIcon />}
             </IconButton>
             {screenAvailable == true ?
               <IconButton onClick={handleScreen} style={{ color: "white" }}>
