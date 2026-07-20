@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import server from "../environment";
 
+
 export const AuthContext = createContext({});
 
 const client = axios.create({
@@ -65,7 +66,8 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             return request.data
-        } catch (err) {
+        } catch
+         (err) {
             throw err;
         }
     }
