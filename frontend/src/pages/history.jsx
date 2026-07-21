@@ -45,13 +45,14 @@ export default function History() {
   }
 
   return (
-    <div>
+    <div className="historyPage">
 
-      <IconButton onClick={() => {
+      <div className="historyHeader"><IconButton onClick={() => {
         routeTo("/home")
       }}>
         <HomeIcon />
-      </IconButton >
+      </IconButton ><h1>Recent meetings</h1></div>
+      <div className="historyGrid">
       {
         (meetings.length !== 0) ? meetings.map((e, i) => {
           return (
@@ -59,7 +60,7 @@ export default function History() {
             <>
 
 
-              <Card key={i} variant="outlined">
+              <Card className="historyCard" key={i} variant="outlined">
 
 
                 <CardContent>
@@ -81,7 +82,7 @@ export default function History() {
           )
         }) : <></>
 
-      }
+      }</div>
 
     </div>
   )

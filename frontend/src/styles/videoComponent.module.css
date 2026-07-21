@@ -1,61 +1,9 @@
-.meetVideoContainer {
-    position: relative;
-    height: 100vh;
-    background: rgb(1, 4, 48);
-}
-
-.meetUserVideo {
-    position: absolute;
-    bottom: 10vh;
-    height: 20vh;
-    width: auto;
-    left: 0;
-    border-radius: 20px;
-}
-
-.buttonContainers {
-    position: absolute;
-    width: 100vw;
-    bottom: 0;
-    text-align: center;
-}
-
-.buttonContainers svg {
-    font-size: 3rem;
-}
-
-.conferenceView {
-
-    display: flex;
-
-    padding: 10px;
-    gap: 10px;
-}
-
-.conferenceView video {
-    width: 40vw;
-    height: 20vh;
-    min-width: 30vw;
-    border-radius: 10px;
-}
-
-.chatRoom {
-    position: absolute;
-    height: 90vh;
-    right: 0;
-    background: white;
-    border-radius: 10px;
-    width: 30vw;
-    padding-inline: 20px;
-}
-
-.chatContainer {
-    position: relative;
-    height: 100%;
-}
-
-
-.chattingArea {
-    position: absolute;
-    bottom: 0;
-}
+.meetVideoContainer { position:relative; min-height:100dvh; overflow:hidden; background:#0d1518; color:#fff; }
+.meetUserVideo { position:fixed; z-index:2; left:20px; bottom:92px; width:clamp(110px,18vw,230px); aspect-ratio:16/10; object-fit:cover; border:2px solid rgba(255,255,255,.75); border-radius:14px; background:#172227; box-shadow:0 10px 28px rgba(0,0,0,.3); }
+.buttonContainers { position:fixed; z-index:5; left:50%; bottom:18px; transform:translateX(-50%); display:flex; align-items:center; gap:7px; padding:7px 10px; border:1px solid rgba(255,255,255,.14); border-radius:999px; background:rgba(18,25,28,.9); box-shadow:0 8px 30px rgba(0,0,0,.25); }
+.callDuration { position:fixed; z-index:5; top:18px; left:50%; transform:translateX(-50%); padding:7px 12px; border:1px solid rgba(255,255,255,.14); border-radius:999px; color:#fff; font-variant-numeric:tabular-nums; background:rgba(18,25,28,.9); }
+.buttonContainers svg { font-size:1.45rem; }.buttonContainers button { width:44px;height:44px; }.buttonContainers button:hover { background:rgba(255,255,255,.15); }
+.conferenceView { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(300px,45vw),1fr)); gap:12px; padding:18px; padding-bottom:100px; }.conferenceView video { display:block; width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:14px; background:#172227; }
+.remoteVideoGrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); gap:12px; min-height:100dvh; padding:18px 18px 100px; }.remoteVideoGrid > div { min-width:0; }.remoteVideo { display:block; width:100%; height:min(72dvh,calc(100vw * .5625)); object-fit:contain; border-radius:14px; background:#000; }
+.chatRoom { position:fixed; z-index:4; top:16px; right:16px; bottom:88px; width:min(360px,calc(100vw - 32px)); padding:18px; border:1px solid #e1e5e4; border-radius:18px; color:#1e292b; background:#fbfcfb; box-shadow:0 15px 45px rgba(0,0,0,.32); }.chatContainer { position:relative; height:100%; display:flex; flex-direction:column; }.chatContainer h1 { margin:0 0 12px; font-size:1.2rem; }.chattingDisplay { flex:1; overflow:auto; padding-right:3px; }.chattingDisplay p { margin:4px 0; }.chattingArea { display:flex; gap:8px; align-items:center; padding-top:10px; }.chattingArea > div { flex:1; }.chattingArea button { min-width:64px; }
+@media (max-width:650px) { .meetUserVideo { left:12px; bottom:84px; width:120px; }.conferenceView { grid-template-columns:1fr; padding:10px; padding-bottom:84px; }.remoteVideoGrid { grid-template-columns:1fr; padding:10px 10px 84px; }.remoteVideo { height:auto; aspect-ratio:16/9; }.callDuration { top:10px; }.buttonContainers { bottom:10px; max-width:calc(100vw - 20px); gap:1px; padding:5px; }.buttonContainers button { width:40px;height:40px; }.buttonContainers svg { font-size:1.25rem; }.chatRoom { top:10px;right:10px;bottom:70px;width:calc(100vw - 20px); } }

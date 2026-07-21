@@ -54,12 +54,12 @@ function HomeComponent() {
             <div className="meetContainer">
                 <div className="leftPanel">
                     <div>
-                        <h2>Providing Quality Video Call Just Like Quality Education</h2>
+                        <h2>A calmer way to meet, wherever you are.</h2>
 
                         <div style={{ display: 'flex', gap: "10px" }}>
 
                             <TextField onChange={e => setMeetingCode(e.target.value)} id="outlined-basic" label="Meeting Code" variant="outlined" />
-                            <Button onClick={handleJoinVideoCall} variant='contained'>Join</Button>
+                            <Button onClick={handleJoinVideoCall} variant='contained' disabled={!meetingCode.trim()}>Join call</Button>
 
                         </div>
                     </div>
