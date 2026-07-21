@@ -22,8 +22,14 @@ app.use(express.urlencoded({ limit: "40kb", extended: true }));
 app.use("/api/v1/users", userRoutes);
 
 const start = async () => {
-    app.set("mongo_user")
-    const connectionDb = await mongoose.connect("mongodb+srv://lakshyajain013:KonvoDB@konvo.vwbb8xr.mongodb.net/")
+    const mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri) {
+        throw new Error("MONGODB_URI is missing. Add it to backend/.env.");
+    }
+
+    const connectionDb = await mongoose.connect(mongoUri, {
+        serverSelectionTimeoutMS: 10000,
+    });
 
     console.log(`MONGO Connected DB HOst: ${connectionDb.connection.host}`)
     server.listen(app.get("port"), () => {
@@ -36,6 +42,8 @@ const start = async () => {
 
 
 
-start();
-
+start().catch((error) => {
+    console.error("Backend failed to start:", error.message);
+    process.exitCode = 1;
+});
 
