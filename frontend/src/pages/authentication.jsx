@@ -1,174 +1,108 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useContext, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import { Snackbar } from '@mui/material';
-
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
+import '../App.css';
 
 export default function Authentication() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [formState, setFormState] = useState(searchParams.get('mode') === 'register' ? 'register' : 'login');
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { handleRegister, handleLogin } = useContext(AuthContext);
 
+    const switchMode = (mode) => {
+        setFormState(mode);
+        setSearchParams(mode === 'register' ? { mode: 'register' } : {});
+        setError('');
+        setMessage('');
+    };
 
+    const handleAuth = async (event) => {
+        event.preventDefault();
+        setError('');
+        setMessage('');
+        setIsSubmitting(true);
 
-    const [username, setUsername] = React.useState();
-    const [password, setPassword] = React.useState();
-    const [name, setName] = React.useState();
-    const [error, setError] = React.useState();
-    const [message, setMessage] = React.useState();
-
-
-    const [formState, setFormState] = React.useState(0);
-
-    const [open, setOpen] = React.useState(false)
-
-
-    const { handleRegister, handleLogin } = React.useContext(AuthContext);
-
-    let handleAuth = async () => {
         try {
-            if (formState === 0) {
-
-                await handleLogin(username, password)
-
-
-            }
-            if (formState === 1) {
-                let result = await handleRegister(name, username, password);
-                console.log(result);
-                setUsername("");
-                setMessage(result);
-                setOpen(true);
-                setError("")
-                setFormState(0)
-                setPassword("")
+            if (formState === 'login') {
+                await handleLogin(username, password);
+            } else {
+                const result = await handleRegister(name, username, password);
+                setMessage(result || 'Your account is ready. Please sign in to continue.');
+                setPassword('');
+                setFormState('login');
+                setSearchParams({});
             }
         } catch (err) {
-
-            console.log(err);
-            let message = (err.response.data.message);
-            setError(message);
+            setError(err?.response?.data?.message || 'Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
         }
-    }
+    };
 
+    const isLogin = formState === 'login';
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Grid container component="main" sx={{ height: '100vh' }}>
-                <CssBaseline />
-                <Grid
-                    item
-                    xs={false}
-                    sm={4}
-                    md={7}
-                    sx={{
-                        backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
-                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                    <Box
-                        sx={{
-                            my: 8,
-                            mx: 4,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
+        <main className="authPage">
+            <section className="authStory" aria-label="About Konvo">
+                <Link className="authBrand" to="/">Konvo<span>.</span></Link>
+                <div className="authStoryContent">
+                    <p className="authEyebrow">Made for meaningful moments</p>
+                    <h1>Good conversations should feel <em>close.</em></h1>
+                    <p className="authStoryCopy">A warm, simple space to catch up with the people who matter—wherever they are.</p>
+                </div>
+                <div className="authCallout">
+                    <span className="authCalloutMark">“</span>
+                    <p>Distance disappears when the conversation feels real.</p>
+                    <span className="authCalloutLine" />
+                </div>
+                <span className="authOrb authOrbOne" />
+                <span className="authOrb authOrbTwo" />
+                <span className="authGridPattern" />
+            </section>
 
+            <section className="authPanel">
+                <div className="authFormWrap">
+                    <Link className="authMobileBrand" to="/">Konvo<span>.</span></Link>
+                    <p className="authKicker">{isLogin ? 'Welcome back' : 'Start connecting'}</p>
+                    <h2>{isLogin ? 'Come on in.' : 'Create your space.'}</h2>
+                    <p className="authIntro">{isLogin ? 'Sign in to start your next conversation.' : 'A few details and you’ll be ready to meet.'}</p>
 
-                        <div>
-                            <Button variant={formState === 0 ? "contained" : ""} onClick={() => { setFormState(0) }}>
-                                Sign In
-                            </Button>
-                            <Button variant={formState === 1 ? "contained" : ""} onClick={() => { setFormState(1) }}>
-                                Sign Up
-                            </Button>
-                        </div>
+                    <div className="authTabs" role="tablist" aria-label="Authentication options">
+                        <button type="button" className={isLogin ? 'active' : ''} onClick={() => switchMode('login')} role="tab" aria-selected={isLogin}>Sign in</button>
+                        <button type="button" className={!isLogin ? 'active' : ''} onClick={() => switchMode('register')} role="tab" aria-selected={!isLogin}>Create account</button>
+                    </div>
 
-                        <Box component="form" noValidate sx={{ mt: 1 }}>
-                            {formState === 1 ? <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Full Name"
-                                name="username"
-                                value={name}
-                                autoFocus
-                                onChange={(e) => setName(e.target.value)}
-                            /> : <></>}
+                    <form className="authForm" onSubmit={handleAuth}>
+                        {!isLogin && <label>
+                            <span>Full name</span>
+                            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" autoComplete="name" required autoFocus />
+                        </label>}
+                        <label>
+                            <span>Username</span>
+                            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Choose a username" autoComplete="username" required autoFocus={isLogin} />
+                        </label>
+                        <label>
+                            <span>Password</span>
+                            <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" type="password" autoComplete={isLogin ? 'current-password' : 'new-password'} required />
+                        </label>
 
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                value={username}
-                                autoFocus
-                                onChange={(e) => setUsername(e.target.value)}
+                        {error && <p className="authFeedback authError" role="alert">{error}</p>}
+                        {message && <p className="authFeedback authSuccess" role="status">{message}</p>}
 
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                value={password}
-                                type="password"
-                                onChange={(e) => setPassword(e.target.value)}
+                        <button className="authSubmit" type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? 'Just a moment…' : isLogin ? 'Sign in to Konvo' : 'Create account'}
+                            {!isSubmitting && <span aria-hidden="true">→</span>}
+                        </button>
+                    </form>
 
-                                id="password"
-                            />
-
-                            <p style={{ color: "red" }}>{error}</p>
-
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                                onClick={handleAuth}
-                            >
-                                {formState === 0 ? "Login " : "Register"}
-                            </Button>
-
-                        </Box>
-                    </Box>
-                </Grid>
-            </Grid>
-
-            <Snackbar
-
-                open={open}
-                autoHideDuration={4000}
-                message={message}
-            />
-
-        </ThemeProvider>
+                    <p className="authSwitch">{isLogin ? 'New to Konvo?' : 'Already have an account?'} <button type="button" onClick={() => switchMode(isLogin ? 'register' : 'login')}>{isLogin ? 'Create one' : 'Sign in'}</button></p>
+                </div>
+            </section>
+        </main>
     );
 }
