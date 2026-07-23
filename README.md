@@ -4,6 +4,13 @@ A modern real-time video conferencing platform built with the **MERN Stack**, **
 
 ---
 
+## 🔗 Quick Links
+
+- 🌐 **Live Demo:** https://konvofrontend-xv4b.onrender.com
+- 💻 **GitHub Repository:** https://github.com/Lakshya-jain11/Konvo
+
+---
+
 ## ✨ Features
 
 - 🔐 User Authentication (JWT)
