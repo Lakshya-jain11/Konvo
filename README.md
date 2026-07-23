@@ -10,6 +10,7 @@ A modern real-time video conferencing platform built with the **MERN Stack**, **
 - 🎥 Real-time Video Calling
 - 🎙️ Mute / Unmute Microphone
 - 📷 Camera On / Off
+- 📺 Screen Sharing
 - 💬 Live Chat
 - 👥 Create & Join Meeting Rooms
 - ⚡ Real-time Communication using Socket.IO
