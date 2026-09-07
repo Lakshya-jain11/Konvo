@@ -13,7 +13,7 @@ A modern real-time video conferencing platform built with the **MERN Stack**, **
 
 ## ✨ Features
 
-- 🔐 User Authentication (JWT)
+- 🔐 Token-based authentication with bcrypt password hashing
 - 🎥 Real-time Video Calling
 - 🎙️ Mute / Unmute Microphone
 - 📷 Camera On / Off
